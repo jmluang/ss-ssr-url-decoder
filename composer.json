@@ -1,0 +1,19 @@
+{
+    "name": "jmluang/ssr",
+    "description": "Ss url or Ssr url decode and generate QR code.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "jmluang",
+            "email": "350216438@qq.com"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {
+            "jmluang\\ssr\\": "src/"
+        }
+    }
+}
