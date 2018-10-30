@@ -48,7 +48,8 @@ class Decoder
      */
     public function qrcode($size = 300)
     {
-        return "https://chart.googleapis.com/chart?chs=". $size ."x". $size ."&cht=qr&chld=L|0&choe=UTF-8&chl=" . $this->origin;
+        $size = $size . "x" . $size;
+        return "http://api.qrserver.com/v1/create-qr-code/?data=" . $this->origin . "&size=" . $size;
     }
 
     /**
