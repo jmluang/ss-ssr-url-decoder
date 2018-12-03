@@ -66,7 +66,7 @@ class Decoder
             throw new DecodeException("Unsupport type");
         }
 
-        return $this->base64Decode($this->uri);
+        return $this->base64Decode($url);
     }
 
     /**
