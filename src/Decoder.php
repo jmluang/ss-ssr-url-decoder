@@ -66,7 +66,7 @@ class Decoder
             throw new DecodeException("Unsupport type");
         }
 
-        return $this->base64Decode($url);
+        return $this->base64Decode($this->uri);
     }
 
     /**
@@ -78,10 +78,13 @@ class Decoder
      */
     private function isSs($url)
     {
-        $result = preg_match("#^ss://(?<uri>.*)#", $url, $params);
-        $this->uri = $params['uri'];
-        $this->sock = new Ss;
-        return $result;
+        preg_match("#^ss://(?<uri>.*)#", $url, $params);
+        if (isset($params['uri'])) {
+            $this->uri = $params['uri'];
+            $this->sock = new Ss;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -93,10 +96,13 @@ class Decoder
      */
     private function isSsr($url)
     {
-        $result = preg_match("#^ssr://(?<uri>.*)#", $url, $params);
-        $this->uri = $params['uri'];
-        $this->sock = new Ssr;
-        return $result;
+        preg_match("#^ssr://(?<uri>.*)#", $url, $params);
+        if (isset($params['uri'])) {
+            $this->uri = $params['uri'];
+            $this->sock = new Ssr;
+            return true;
+        }
+        return false;
     }
 
 }
