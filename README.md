@@ -14,7 +14,7 @@ $obj = new Decoder('ssr://...');
 echo $obj->qrcode();
 ```
 
-Qrcode Generate By [QR Code Generator]('http://goqr.me/api/doc/create-qr-code/')
+Qrcode Generate By [QR Code Generator](http://goqr.me/api/doc/create-qr-code/)
 
 # LICENSE
 MIT
