@@ -33,14 +33,19 @@ class Decoder
      * return the decode result
      * 
      * @return Object jmluang\Ss|jmluang\Ssr
+     * @throws jmluang\ssr\Exception\DecodeException
      */
     public function decode()
     {
-        return $this->sock->decode($this->uri);
+        $object = $this->sock->decode($this->uri);
+        if (!$object->host) {
+            throw new DecodeException();
+        }
+        return $object;
     }
 
     /**
-     * qrcode generate by google api, return the url
+     * qrcode generate by others api, return the image url
      * 
      * @param int size
      * 
@@ -49,7 +54,7 @@ class Decoder
     public function qrcode($size = 300)
     {
         $size = $size . "x" . $size;
-        return "http://api.qrserver.com/v1/create-qr-code/?data=" . $this->origin . "&size=" . $size;
+        return "https://api.qrserver.com/v1/create-qr-code/?data=" . $this->origin . "&size=" . $size;
     }
 
     /**
@@ -58,12 +63,18 @@ class Decoder
      * @param string $uri
      * 
      * @return string
+     * @throws jmluang\ssr\Exception\DecodeException
      */
     private function init($url)
     {
         // Check the url is ss or ssr
         if (!$this->isSs($url) && !$this->isSsr($url)) {
             throw new DecodeException("Unsupport type");
+        }
+
+        // Check whether the url is empty or not
+        if (empty($this->uri)) {
+            throw new DecodeException("Illegal url");
         }
 
         return $this->base64Decode($this->uri);

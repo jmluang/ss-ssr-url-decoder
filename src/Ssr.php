@@ -21,6 +21,9 @@ class Ssr implements canDecode
         $pattern = '#(?<host>.*):(?<port>.*):(?<protocol>.*):(?<method>.*):(?<obfs>.*):(?<password_base64>.*)/\?(?<params_base64>.*)#';
         
         preg_match($pattern, $uri, $params);
+        if (empty($params)) {
+            return $this;
+        }
         
         // set object param
         $keys = ["method", "host", "port", "protocol", "obfs"]; 

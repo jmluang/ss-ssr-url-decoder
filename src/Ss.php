@@ -13,14 +13,17 @@ class Ss implements canDecode
      */
     public function decode($uri)
     {
-        // method : password @ host : port
+        //ss://method:password@host:port
         $pattern = '/(?<method>.*):(?<password>.*)@(?<host>.*):(?<port>.*)/';
-        preg_match($pattern, $uri, $param);
+        preg_match($pattern, $uri, $params);
+        if (empty($params)) {
+            return $this;
+        }
 
         // set object param
         $var = ["method", "password", "host", "port"]; 
         foreach ($var as $v) {
-            $this->$v = $param[$v]; 
+            $this->$v = $params[$v]; 
         }
         return $this;
     }
