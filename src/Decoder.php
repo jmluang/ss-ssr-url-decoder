@@ -38,7 +38,7 @@ class Decoder
     public function decode()
     {
         $object = $this->sock->decode($this->uri);
-        if (!$object->host) {
+        if (!isset($object->host)) {
             throw new DecodeException();
         }
         return $object;

@@ -35,7 +35,7 @@ final class DecoderTest extends TestCase
     public function testCanNotDecodeIllegalSsrUrl() : void
     {
         $this->expectException(DecodeException::class);
-        (new Decoder('ssr://;test'))->decode(); 
+        (new Decoder('ssr://123'))->decode();
     }
 
     public function testCanNotDecodeIllegalEmptySsrUrl() : void
