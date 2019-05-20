@@ -1,32 +1,19 @@
 <?php
 namespace jmluang\ssr;
 
-use jmluang\ssr\Traits\Util;
 use jmluang\ssr\Exception\DecodeException;
+use jmluang\ssr\Interfaces\canDecode;
 
 class Decoder 
 {
-    use Util;
-
     /**
-     * The origin Url
+     * The url
      */
     public $origin;
-
-    /**
-     * The base64 decode string
-     */
-    public $uri;
-
-    /**
-     * The Decode Object, must implement of jmluang\canDecode 
-     */
-    public $sock;
 
     public function __construct($url)
     {
         $this->origin = $url;
-        $this->uri = $this->init($url); 
     }
 
     /**
@@ -37,11 +24,12 @@ class Decoder
      */
     public function decode()
     {
-        $object = $this->sock->decode($this->uri);
-        if (!isset($object->host)) {
-            throw new DecodeException();
+        $handler = $this->getHandler($this->origin);
+        if (!($handler instanceof canDecode)) {
+            throw new DecodeException('not support type');
         }
-        return $object;
+
+        return $handler->decode($this->origin);
     }
 
     /**
@@ -58,62 +46,22 @@ class Decoder
     }
 
     /**
-     * replace spec char
+     * Get class by url type
      * 
-     * @param string $uri
+     * @param string $url
      * 
-     * @return string
-     * @throws jmluang\ssr\Exception\DecodeException
+     * @return null|jmluang\ssr\Interfaces\canDecode
      */
-    private function init($url)
+    private function getHandler(string $url)
     {
-        // Check the url is ss or ssr
-        if (!$this->isSs($url) && !$this->isSsr($url)) {
-            throw new DecodeException("Unsupport type");
+        if (Ss::check($url)) {
+            return new Ss;
         }
 
-        // Check whether the url is empty or not
-        if (empty($this->uri)) {
-            throw new DecodeException("Illegal url");
+        if (Ssr::check($url)) {
+            return new Ssr;
         }
 
-        return $this->base64Decode($this->uri);
+        return null;
     }
-
-    /**
-     * check is ss
-     * 
-     * @param string $uri
-     * 
-     * @return int
-     */
-    private function isSs($url)
-    {
-        preg_match("#^ss://(?<uri>.*)#", $url, $params);
-        if (isset($params['uri'])) {
-            $this->uri = $params['uri'];
-            $this->sock = new Ss;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * check is ssr
-     * 
-     * @param string $uri
-     * 
-     * @return int;
-     */
-    private function isSsr($url)
-    {
-        preg_match("#^ssr://(?<uri>.*)#", $url, $params);
-        if (isset($params['uri'])) {
-            $this->uri = $params['uri'];
-            $this->sock = new Ssr;
-            return true;
-        }
-        return false;
-    }
-
 }

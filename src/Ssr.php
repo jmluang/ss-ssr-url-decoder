@@ -1,6 +1,7 @@
 <?php
 namespace jmluang\ssr;
 
+use jmluang\ssr\Exception\DecodeFailureException;
 use jmluang\ssr\Interfaces\canDecode;
 use jmluang\ssr\Traits\Util;
 
@@ -9,20 +10,39 @@ class Ssr implements canDecode
     use Util;
 
     /**
+     * Check if the url can decode by the use class
+     * 
+     * @param string $url
+     * 
+     * @return boolean
+     */
+    public static function check(string $url): bool
+    {
+        preg_match("#^ssr://(?<uri>.*)#", $url, $params);
+        if (isset($params['uri'])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Decode the SSR uri
      * 
      * @param string $uri
      * 
+     * @throws jmluang\ssr\Exception\DecodeFailureException
      * @return Ss 
      */
-    public function decode($uri)
+    public function decode(string $url)
     {
+        $uri = $this->base64Decode(substr($url, strlen('ssr://')));
+
         // ssr://server:port:protocol:method:obfs:password_base64/?params_base64
         $pattern = '#(?<host>.*):(?<port>.*):(?<protocol>.*):(?<method>.*):(?<obfs>.*):(?<password_base64>.*)/\?(?<params_base64>.*)#';
         
         preg_match($pattern, $uri, $params);
         if (empty($params)) {
-            return $this;
+            throw new DecodeFailureException('can not decode this url');
         }
         
         // set object param

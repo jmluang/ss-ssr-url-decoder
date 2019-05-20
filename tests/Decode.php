@@ -4,9 +4,9 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 use jmluang\ssr\Decoder;
 use jmluang\ssr\Exception\DecodeException;
-use phpDocumentor\Reflection\Types\Void_;
+use jmluang\ssr\Exception\DecodeFailureException;
 
-final class DecoderTest extends TestCase
+final class Decode extends TestCase
 {
     public function testCanNotDecodeEmptyUrl() : void
     {
@@ -22,7 +22,7 @@ final class DecoderTest extends TestCase
 
     public function testCanNotDecodeIllegalSsUrl() : void
     {
-        $this->expectException(DecodeException::class);
+        $this->expectException(DecodeFailureException::class);
         (new Decoder('ss://;test'))->decode(); 
     }
 
@@ -34,7 +34,7 @@ final class DecoderTest extends TestCase
 
     public function testCanNotDecodeIllegalSsrUrl() : void
     {
-        $this->expectException(DecodeException::class);
+        $this->expectException(DecodeFailureException::class);
         (new Decoder('ssr://123'))->decode();
     }
 
